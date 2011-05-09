@@ -109,19 +109,19 @@ class DjangoOpenIDStore(OpenIDStore):
 def from_openid_response(openid_response):
     issued = int(time.time())
 
-    openid = OpenID(openid_response.identity_url, issued, openid_response.signed_fields)
+    oidobj = OpenID(openid_response.identity_url, issued, openid_response.signed_fields)
 
     if getattr(settings, 'OPENID_PAPE', False):
         if openid.__version__ < '2.1.0':
             raise ImportError, 'For pape extension you need python-openid 2.1.0 or newer'
-        openid.pape = oidpape.Response.fromSuccessResponse(openid_response)
+        oidobj.pape = oidpape.Response.fromSuccessResponse(openid_response)
 
     if getattr(settings, 'OPENID_SREG', False):
-        openid.sreg = oidsreg.SRegResponse.fromSuccessResponse(openid_response)
+        oidobj.sreg = oidsreg.SRegResponse.fromSuccessResponse(openid_response)
 
     if getattr(settings, 'OPENID_AX', False):
         if openid.__version__ < '2.1.0':
             raise ImportError, 'For ax extension you need python-openid 2.1.0 or newer'
-        openid.ax = oidax.FetchResponse.fromSuccessResponse(openid_response)
+        oidobj.ax = oidax.FetchResponse.fromSuccessResponse(openid_response)
 
-    return openid
+    return oidobj
